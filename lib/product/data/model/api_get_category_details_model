@@ -1,0 +1,105 @@
+// To parse this JSON data, do
+//
+//     final welcome = welcomeFromJson(jsonString);
+
+import 'dart:convert';
+
+Welcome welcomeFromJson(String str) => Welcome.fromJson(json.decode(str));
+
+String welcomeToJson(Welcome data) => json.encode(data.toJson());
+
+class Welcome {
+    String? message;
+    Data? data;
+
+    Welcome({
+        this.message,
+        this.data,
+    });
+
+    factory Welcome.fromJson(Map<String, dynamic> json) => Welcome(
+        message: json["message"],
+        data: json["data"] == null ? null : Data.fromJson(json["data"]),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "message": message,
+        "data": data?.toJson(),
+    };
+}
+
+class Data {
+    int? id;
+    dynamic name;
+    String? backgroundImage;
+    String? image;
+    List<Product>? products;
+
+    Data({
+        this.id,
+        this.name,
+        this.backgroundImage,
+        this.image,
+        this.products,
+    });
+
+    factory Data.fromJson(Map<String, dynamic> json) => Data(
+        id: json["id"],
+        name: json["name"],
+        backgroundImage: json["background_image"],
+        image: json["image"],
+        products: json["products"] == null ? [] : List<Product>.from(json["products"]!.map((x) => Product.fromJson(x))),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
+        "background_image": backgroundImage,
+        "image": image,
+        "products": products == null ? [] : List<dynamic>.from(products!.map((x) => x.toJson())),
+    };
+}
+
+class Product {
+    int? id;
+    dynamic name;
+    dynamic description;
+    String? image;
+    bool? isSingle;
+    int? price;
+    int? priceBeforeDiscount;
+    int? points;
+
+    Product({
+        this.id,
+        this.name,
+        this.description,
+        this.image,
+        this.isSingle,
+        this.price,
+        this.priceBeforeDiscount,
+        this.points,
+    });
+
+    factory Product.fromJson(Map<String, dynamic> json) => Product(
+        id: json["id"],
+        name: json["name"],
+        description: json["description"],
+        image: json["image"],
+        isSingle: json["is_single"],
+        price: json["price"],
+        priceBeforeDiscount: json["price_before_discount"],
+        points: json["points"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "name": name,
+        "description": description,
+        "image": image,
+        "is_single": isSingle,
+        "price": price,
+        "price_before_discount": priceBeforeDiscount,
+        "points": points,
+    };
+}

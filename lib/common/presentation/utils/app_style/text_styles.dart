@@ -20,7 +20,7 @@ class TextStyles {
         fontWeight: FontWeight.w400,
 
         // textScaleFactor: 1.0,
-        fontSize: fontSize.sp);
+        fontSize: fontSize);
   }
 
   static TextStyle light(
@@ -32,7 +32,7 @@ class TextStyles {
           color: color,
           fontFamily: 'Apercu',
           fontWeight: FontWeight.w300,
-          fontSize: fontSize.sp);
+          fontSize: fontSize);
 
   static TextStyle bold({
     Color color = Colors.black,
@@ -46,7 +46,7 @@ class TextStyles {
         fontFamily: 'Apercu',
         overflow: textOverFlow,
         fontWeight: FontWeight.w700,
-        fontSize: fontSize.sp,
+        fontSize: fontSize,
       );
 
   static TextStyle boldUnderlined(
@@ -55,7 +55,7 @@ class TextStyles {
           color: color,
           fontFamily: 'Apercu',
           fontWeight: FontWeight.w700,
-          fontSize: fontSize.sp,
+          fontSize: fontSize,
           decoration: TextDecoration.underline);
 
   static TextStyle regularUnderlined({
@@ -67,7 +67,7 @@ class TextStyles {
           color: color,
           fontFamily: 'Apercu',
           fontWeight: FontWeight.w400,
-          fontSize: fontSize.sp,
+          fontSize: fontSize,
           decoration: TextDecoration.underline,
           decorationColor: decorationColor);
 
@@ -82,7 +82,7 @@ class TextStyles {
           overflow: textOverFlow ?? TextOverflow.visible,
           fontFamily: 'Apercu',
           fontWeight: FontWeight.w500,
-          fontSize: fontSize.sp);
+          fontSize: fontSize);
 
   static TextStyle mediumUnderlined(
           {Color color = Colors.black, double fontSize = 14.0}) =>
@@ -90,7 +90,7 @@ class TextStyles {
         color: color,
         fontFamily: 'Apercu',
         fontWeight: FontWeight.w500,
-        fontSize: fontSize.sp,
+        fontSize: fontSize,
         decoration: TextDecoration.underline,
       );
 
@@ -103,7 +103,7 @@ class TextStyles {
           color: color,
           fontFamily: 'Apercu',
           fontWeight: FontWeight.w600,
-          fontSize: fontSize.sp);
+          fontSize: fontSize);
 
   static TextStyle thin(
           {Color color = Colors.black,
@@ -114,7 +114,7 @@ class TextStyles {
           fontFamily: 'Apercu',
           fontWeight: FontWeight.w100,
           height: height,
-          fontSize: fontSize.sp);
+          fontSize: fontSize);
 
   static TextStyle thinUnderlined(
       {Color color = Colors.black, double fontSize = 14.0,
@@ -123,7 +123,7 @@ class TextStyles {
         color: color,
         fontFamily: 'Apercu',
         fontWeight: FontWeight.w100,
-        fontSize: fontSize.sp,
+        fontSize: fontSize,
         height: height,
         decoration: TextDecoration.underline,
       );

@@ -48,6 +48,15 @@ class ProductEntity extends Equatable {
       required this.priceBeforeDiscount,
       required this.points});
 
+  const ProductEntity.initial():this(id: 0,
+        name: "name",
+        description: "description",
+        image: "image",
+        isSingle: false,
+        price: null,
+        priceBeforeDiscount: null,
+        points: null);
+
   @override
   List<Object?> get props => [
         id,

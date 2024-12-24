@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loadserv_task/common/base/async.dart';
 import 'package:loadserv_task/common/data/di/app_injector.dart';
 import 'package:loadserv_task/common/presentation/utils/bloc_utils.dart';
-import 'package:loadserv_task/product/domain/use_case/get_product_use_case.dart';
+import 'package:loadserv_task/product/domain/use_case/get_category_use_case.dart';
+import 'package:loadserv_task/product/domain/use_case/get_product_details_use_case.dart';
 import 'package:loadserv_task/product/presentation/manager/category_state.dart';
 
 class CategoryCubit extends Cubit<CategoryState> {
@@ -12,9 +13,11 @@ class CategoryCubit extends Cubit<CategoryState> {
   }
 
   late final GetCategoryUseCase _getCategoryUseCase;
+  late final GetProductDetailsUseCase _getProductDetailsUseCase;
 
   void _loadInjectors() {
     _getCategoryUseCase = injector();
+    _getProductDetailsUseCase = injector();
   }
 
   Future<void> getCategoryDetails() async {
@@ -31,4 +34,20 @@ class CategoryCubit extends Cubit<CategoryState> {
       },
     );
   }
+
+
+  Future<void> getProductDetails(String productId) async {
+    emit(state.reduce(productDetails: const Async.loading()));
+    await collect(
+      task: () async {
+        final data = await _getProductDetailsUseCase.execute(productId);
+        emit(state.reduce(productDetails: Async.success(data)));
+      },
+      onError: (errorMessage) {
+        emit(state.reduce(
+            productDetails: Async.failure(errorMessage)));
+      },
+    );
+  }
+
 }

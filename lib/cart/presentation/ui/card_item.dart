@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:loadserv_task/common/presentation/utils/app_style/app_colors.dart';
 import 'package:loadserv_task/common/presentation/utils/app_style/text_styles.dart';
+import 'package:loadserv_task/common/presentation/utils/bottom_sheets/show_bottom_sheet_common.dart';
 import 'package:loadserv_task/common/presentation/utils/dimensions.dart';
+import 'package:loadserv_task/product/domain/entity/product_total_price_entity.dart';
 import 'package:loadserv_task/product/presentation/ui/widget/custome_widgets.dart';
 
 class CardItem extends StatefulWidget {
-  final String? image;
-  final String? name;
-  final int? price;
-  final int? oldPrice;
+  final CartProductEntity item;
   final void Function(int numbers) valueTrigger;
   final int? defaultValue;
 
   const CardItem(
       {super.key,
-      required this.image,
-      required this.name,
-      required this.price,
-      this.oldPrice,
+      required this.item,
       required this.valueTrigger,
       this.defaultValue});
 
@@ -47,147 +43,170 @@ class _CardItemState extends State<CardItem> {
     }
     super.initState();
   }
+void _whenComplete(){
 
+}
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height / 4.2,
-        child: Card(
-          // shadowColor: Colors.black,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          elevation: 2,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: PaddingDimensions.normal),
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(15),
-                    ),
-                    child: Image.network(
-                      widget.image ??
-                          "https://www.trendapp.org/test-project/public/storage/product/1728285739_67038c2be6775.jpg",
-                      height: MediaQuery.of(context).size.height / 4.2,
-                      width: MediaQuery.of(context).size.width / 3,
-                      // width: double.infinity,
-                      fit: BoxFit.fill,
+    return InkWell(
+      onTap: () {
+        CommonBottomSheet.openProductDetailsSheet(context, widget.item.id,
+        cartItem: widget.item,
+        whenComplete:_whenComplete );
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height / 4.4,
+          child: Card(
+            // shadowColor: Colors.black,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            elevation: 2,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: PaddingDimensions.normal),
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(15),
+                      ),
+                      child: Image.network(
+                        widget.item.image ??
+                            "https://www.trendapp.org/test-project/public/storage/product/1728285739_67038c2be6775.jpg",
+                        height: MediaQuery.of(context).size.height / 4.4,
+                        width: MediaQuery.of(context).size.width / 3,
+                        // width: double.infinity,
+                        fit: BoxFit.fill,
+                      ),
                     ),
                   ),
-                ),
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Row(
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      textAlign: TextAlign.start,
+                                      widget.item.name ??
+                                          'Grilled Steak, with Boiled Basmati Rice And Salad',
+                                      style: TextStyles.bold(
+                                        fontSize: Dimensions.xLarge,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    if (widget.item.weightName?.isNotEmpty ??
+                                        false) ...[
+                                      _customRow(
+                                          title: 'Weight',
+                                          description:
+                                              widget.item.weightName ?? '').paddingFromBottom,
+
+                                    ],
+                                    if (widget
+                                        .item.additionsNumber!=0) ...[
+                                      _customRow(
+                                          title: 'Salads',
+                                          description:
+                                              '${widget.item.additionsNumber} items').paddingFromBottom,
+                                    ],
+                                    if (widget.item.extrasNumber!=0) ...[
+                                      _customRow(
+                                          title: 'Extras',
+                                          description:
+                                              '${widget.item.extrasNumber} items').paddingFromBottom,
+                                    ],
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: PaddingDimensions.large),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    InkWell(
+                                      splashColor: Colors.white,
+                                      onTap: _increasePieces,
+                                      child: const CustomIcon(
+                                        icon: Icons.add,
+                                        size: 18,
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    SizedBox(
+                                      width:
+                                          MediaQuery.of(context).size.width / 8,
+                                      child: ValueListenableBuilder(
+                                        valueListenable: _numbers,
+                                        builder: (context, value, child) {
+                                          return Center(
+                                            child: Text(
+                                              _numbers.value.toString(),
+                                              style: TextStyles.medium(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    InkWell(
+                                      splashColor: Colors.white,
+                                      onTap: _decreasePieces,
+                                      child: const CustomIcon(
+                                        icon: Icons.remove,
+                                        size: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Expanded(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    widget.name ??
-                                        'Grilled Steak, with Boiled Basmati Rice And Salad',
-                                    style: TextStyles.bold(
-                                      fontSize: Dimensions.xLarge,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  _customRow(
-                                      title: 'title',
-                                      description: 'description'),
-                                  _customRow(
-                                      title: 'title',
-                                      description: 'description'),
-                                  _customRow(
-                                      title: 'title',
-                                      description: 'description'),
-                                ],
-                              ),
+                              child: _boldText(widget.item.totalPrice.toString()),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: PaddingDimensions.large),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  InkWell(
-                                    splashColor: Colors.white,
-                                    onTap: _increasePieces,
-                                    child: const CustomIcon(
-                                      icon: Icons.add,
-                                      size: 18,
-                                    ),
-                                  ),
-                                  const Spacer(),
-                                  SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width / 8,
-                                    child: ValueListenableBuilder(
-                                      valueListenable: _numbers,
-                                      builder: (context, value, child) {
-                                        return Center(
-                                          child: Text(
-                                            _numbers.value.toString(),
-                                            style: TextStyles.medium(
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  const Spacer(),
-                                  InkWell(
-                                    splashColor: Colors.white,
-                                    onTap: _decreasePieces,
-                                    child: const CustomIcon(
-                                      icon: Icons.remove,
-                                      size: 14,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            const Spacer(),
+                            Image.asset(
+                              "assets/images/note.png",
+                              scale: 4,
                             ),
+                            const Spacer(),
+                            Image.asset(
+                              "assets/images/chat.png",
+                              scale: 4,
+                            ),
+                            const Spacer(),
                           ],
                         ),
-                      ),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Expanded(
-                              child: _customRow(
-                                  title: 'title', description: 'description')),
-                          const Spacer(),
-                          Image.asset(
-                            "assets/images/note.png",
-                            scale: 4,
-                          ),
-                          const Spacer(),
-                          Image.asset(
-                            "assets/images/chat.png",
-                            scale: 4,
-                          ),
-                          const Spacer(),
-                        ],
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -232,4 +251,12 @@ class _CardItemState extends State<CardItem> {
       ),
     );
   }
+}
+extension PaddingFromOneSide on Widget {
+  Widget get paddingFromBottom =>
+     Padding(
+      padding: const EdgeInsets.only(bottom: PaddingDimensions.small),
+      child: this,
+    );
+
 }

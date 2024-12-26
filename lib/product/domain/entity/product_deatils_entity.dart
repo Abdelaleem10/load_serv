@@ -24,6 +24,22 @@ class ProductDetailsEntity extends Equatable {
           weights: [],
         );
 
+  ProductDetailsEntity modify({
+     List<ExtraItemEntity>? extraItems,
+     List<ExtraItemEntity>? salads,
+
+  }) {
+    return ProductDetailsEntity(id: id,
+        name: name,
+        description: description,
+        image: image,
+        isSingle: isSingle,
+        points: points,
+        extraItems: extraItems??this.extraItems,
+        salads: salads??this.salads,
+        weights: weights);
+  }
+
   const ProductDetailsEntity({
     required this.id,
     required this.name,
@@ -64,7 +80,15 @@ class ExtraItemEntity extends Equatable {
       required this.image,
       required this.isChoose});
 
-
+  ExtraItemEntity modify({
+    bool? isChoose,
+}){
+    return ExtraItemEntity(id: id,
+        name: name,
+        price: price,
+        image: image,
+        isChoose: isChoose??this.isChoose);
+  }
   @override
   List<Object?> get props => [id, name, price, image, isChoose];
 }

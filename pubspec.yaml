@@ -49,6 +49,8 @@ dependencies:
   device_preview:
   responsive_framework: ^1.4.0
   lottie:
+  fluttertoast: ^8.2.10
+  rxdart:
   connectivity_plus:
 dev_dependencies:
   flutter_test:

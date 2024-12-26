@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loadserv_task/common/presentation/ui/widgets/custom_app_bar_icon.dart';
 import 'package:loadserv_task/common/presentation/utils/app_style/app_colors.dart';
 import 'package:loadserv_task/product/domain/entity/product_entity.dart';
 
@@ -54,7 +55,7 @@ class CategoryHeader extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment
                                 .start,
                             children: [
-                              _customIcon(Icons.arrow_back),
+                              const CustomAppBarIcon(icon:Icons.arrow_back),
                               Expanded(
                                 child: Center(
                                   child: Padding(
@@ -79,7 +80,7 @@ class CategoryHeader extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              _customIcon(Icons.menu),
+                              CustomAppBarIcon(icon:Icons.menu),
 
                             ],
                           ),
@@ -146,14 +147,4 @@ class CategoryHeader extends StatelessWidget {
       ],
     );
   }
-  Widget _customIcon(IconData icon) =>
-     Container(
-      margin: const EdgeInsets.all(8),
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(12)),
-      child: Icon(
-          icon, color: AppColors.grayColor),
-    );
-
 }

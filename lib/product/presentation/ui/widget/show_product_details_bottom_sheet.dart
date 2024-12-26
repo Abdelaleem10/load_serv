@@ -1,21 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:loadserv_task/cart/presentation/manager/cart_cubit.dart';
+import 'package:loadserv_task/cart/presentation/utils/modify_cart_item_subscription.dart';
 import 'package:loadserv_task/common/presentation/ui/widgets/failure_page.dart';
 import 'package:loadserv_task/common/presentation/ui/widgets/loading_widget.dart';
 import 'package:loadserv_task/common/presentation/utils/app_style/app_colors.dart';
 import 'package:loadserv_task/common/presentation/utils/app_style/text_styles.dart';
 import 'package:loadserv_task/common/presentation/utils/buttons/custom_buttons.dart';
 import 'package:loadserv_task/common/presentation/utils/dimensions.dart';
+import 'package:loadserv_task/common/presentation/utils/toasts/add_to_cart_toast.dart';
 import 'package:loadserv_task/product/domain/entity/product_deatils_entity.dart';
 import 'package:loadserv_task/product/domain/entity/product_total_price_entity.dart';
 import 'package:loadserv_task/product/presentation/manager/category_cubit.dart';
 import 'package:loadserv_task/product/presentation/manager/category_state.dart';
 import 'package:loadserv_task/product/presentation/ui/widget/custom_product_card.dart';
+import 'package:loadserv_task/product/presentation/utils/ui_extensions.dart';
 
 class ShowProductDetailsBottomSheet extends StatefulWidget {
+  final CartProductEntity? cartItem;
   final String productId;
 
-  const ShowProductDetailsBottomSheet({super.key, required this.productId});
+  const ShowProductDetailsBottomSheet(
+      {super.key, required this.productId, this.cartItem});
 
   @override
   State<ShowProductDetailsBottomSheet> createState() =>
@@ -24,6 +31,7 @@ class ShowProductDetailsBottomSheet extends StatefulWidget {
 
 class _ShowProductDetailsBottomSheetState
     extends State<ShowProductDetailsBottomSheet> {
+  // int _defaultValue=0;
   int _selectedIndex = 0;
   List<AdditionPriceEntity> _selectedAdditionList = [];
   List<ExtraItemEntity> _extraItems = [];
@@ -31,12 +39,30 @@ class _ShowProductDetailsBottomSheetState
   final ValueNotifier<int> _numberOfPiecesListener = ValueNotifier(1);
 
   final ValueNotifier<int> _additionNumbersNotifier = ValueNotifier(0);
-  CartProductEntityEntity _totalPrice = CartProductEntityEntity.initial();
+  CartProductEntity _totalPriceObject = CartProductEntity.initial();
+
+  void _initializeCartItem() {
+    if (widget.cartItem != null) {
+      _selectedIndex = widget.cartItem?.weightIndex ?? 0;
+      _numberOfPiecesListener.value = widget.cartItem?.numberOfPieces ?? 0;
+      _additionNumbersNotifier.value = widget.cartItem?.additionsNumber ?? 0;
+      for (int i = 0; i < (widget.cartItem?.extrasPriceList.length ?? 0); i++) {
+        final item = widget.cartItem?.extrasPriceList[i];
+        _extraItems.add(ExtraItemEntity(
+            id: item?.id ?? 0,
+            name: item?.name ?? '',
+            price: item?.price ?? 0,
+            image: item?.name ?? '',
+            isChoose: true));
+      }
+    }
+  }
 
   void _getData() => BlocProvider.of<CategoryCubit>(context)
       .getProductDetails(widget.productId);
 
-  void _collectAddition(int index, int numbers, int listLength, int price) {
+  void _collectAddition(
+      int index, int numbers, int listLength, int price, String name, int id) {
     if (_selectedAdditionList.isEmpty) {
       _selectedAdditionList = List.generate(listLength, (index) {
         return AdditionPriceEntity.initial();
@@ -44,9 +70,9 @@ class _ShowProductDetailsBottomSheetState
 
       _additionNumbersNotifier.value = 1;
 
-      _getTotalPrice(
-          addition: [AdditionPriceEntity(numbers: 1, price: price)],
-          extraItems: _extraItems);
+      _getTotalPrice(addition: [
+        AdditionPriceEntity(numbers: 1, price: price, name: name, id: id)
+      ], extraItems: _extraItems);
     } else {
       _selectedAdditionList[index].numbers = numbers;
       _selectedAdditionList[index].price = price;
@@ -61,20 +87,39 @@ class _ShowProductDetailsBottomSheetState
     }).toList();
   }
 
-  void _getTotalPrice(
-      {int? productPrice,
-      List<AdditionPriceEntity>? addition,
-      List<ExtraItemEntity>? extraItems}) {
-    _totalPrice = _totalPrice.modify(
+  void _getTotalPrice({
+    int? productPrice,
+    String? name,
+    String? weightName,
+    int? weightPrice,
+    int? weightIndex,
+    String? image,
+    String? id,
+    List<AdditionPriceEntity>? addition,
+    List<ExtraItemEntity>? extraItems,
+  }) {
+    _totalPriceObject = _totalPriceObject.modify(
+      id: id,
+      weightIndex: weightIndex,
+      name: name,
+      weightName: weightName,
+      image: image,
+      weightPrice: weightPrice,
+      additionPricesList: addition,
+      extrasPriceList: extraItems?.map((e) => e.map()).toList(),
       productPrice: productPrice,
       numberOfPieces: _numberOfPiecesListener.value,
     );
 
-    _totalAmount.value = collectedProductPrice(_totalPrice,
+    _totalAmount.value = collectedProductPrice(_totalPriceObject,
         addition: addition, extraItems: extraItems);
+    _totalPriceObject = _totalPriceObject.modify(
+      totalPrice: _totalAmount.value,
+    );
+    _modifyCartItem();
   }
 
-  int collectedProductPrice(CartProductEntityEntity item,
+  int collectedProductPrice(CartProductEntity item,
       {List<AdditionPriceEntity>? addition,
       List<ExtraItemEntity>? extraItems}) {
     int priceWithoutAddition = item.productPrice * item.numberOfPieces;
@@ -93,10 +138,15 @@ class _ShowProductDetailsBottomSheetState
     return priceWithoutAddition;
   }
 
+  late FToast fToast;
+
   @override
   void initState() {
     _getData();
+    _initializeCartItem();
     super.initState();
+    fToast = FToast();
+    fToast.init(context);
   }
 
   @override
@@ -111,6 +161,13 @@ class _ShowProductDetailsBottomSheetState
         }
         if (state.productDetails.isSuccess) {
           _getTotalPrice(
+              weightName:
+                  state.productDetails.data?.weights[_selectedIndex].name,
+              weightPrice:
+                  state.productDetails.data?.weights[_selectedIndex].price,
+              id: state.productDetails.data?.id.toString(),
+              image: state.productDetails.data?.image,
+              name: state.productDetails.data?.name,
               productPrice:
                   state.productDetails.data?.weights[_selectedIndex].price ?? 0,
               addition: _selectedAdditionList,
@@ -164,6 +221,11 @@ class _ShowProductDetailsBottomSheetState
                             click: (index) {
                               set(() {
                                 _getTotalPrice(
+                                    weightIndex: index,
+                                    weightPrice: state.productDetails.data
+                                        ?.weights[index].price,
+                                    weightName: state.productDetails.data
+                                        ?.weights[index].name,
                                     productPrice: state.productDetails.data
                                         ?.weights[index].price,
                                     addition: _selectedAdditionList,
@@ -212,6 +274,10 @@ class _ShowProductDetailsBottomSheetState
                                 state.productDetails.data?.salads[index]
                                         .price ??
                                     0,
+                                state.productDetails.data?.salads[index].name ??
+                                    '',
+                                state.productDetails.data?.salads[index].id ??
+                                    1,
                               );
                             },
                           );
@@ -258,14 +324,20 @@ class _ShowProductDetailsBottomSheetState
                     },
                   ),
                 ],
-                ValueListenableBuilder(
-                  valueListenable: _totalAmount,
-                  builder: (context, value, child) {
-                    return PrimaryButton(
-                        firstTitle: "Add To Cart",
-                        secondTitle: _totalAmount.value.toString());
-                  },
-                )
+                if(widget.cartItem!=null)...[
+                  ValueListenableBuilder(
+                    valueListenable: _totalAmount,
+                    builder: (context, value, child) {
+                      return InkWell(
+                        child: DefaultButton(
+                            onTap: _addProductToCart,
+                            firstTitle: "Add To Cart",
+                            secondTitle: _totalAmount.value.toString()),
+                      );
+                    },
+                  )
+
+                ]
               ],
             ),
           );
@@ -273,6 +345,46 @@ class _ShowProductDetailsBottomSheetState
         return const SizedBox.shrink();
       },
     );
+  }
+
+  void _modifyCartItem() {
+    if (widget.cartItem != null) {
+      _refactorAddition();
+      _refactorExtras();
+
+      ModifyCartItemSubscription.push(_totalPriceObject);
+    }
+  }
+
+  void _refactorAddition() {
+    _totalPriceObject.additionPricesList.removeWhere((e) => e.numbers == 0);
+    int additionsNumber = 0;
+    for (int i = 0; i < (_totalPriceObject.additionPricesList.length); i++) {
+      additionsNumber =
+          additionsNumber + _totalPriceObject.additionPricesList[i].numbers;
+      // print('additionsNumber ${additionsNumber}');
+    }
+    _totalPriceObject =
+        _totalPriceObject.modify(additionsNumber: additionsNumber);
+  }
+
+  void _refactorExtras() {
+    _totalPriceObject.extrasPriceList.removeWhere((e) => e.numbers == 0);
+    int extrasNumber = 0;
+    for (int i = 0; i < (_totalPriceObject.extrasPriceList.length); i++) {
+      extrasNumber =
+          extrasNumber + _totalPriceObject.extrasPriceList[i].numbers;
+    }
+
+    _totalPriceObject = _totalPriceObject.modify(extrasNumber: extrasNumber);
+  }
+
+  void _addProductToCart() {
+    _refactorAddition();
+    _refactorExtras();
+    BlocProvider.of<CartCubit>(context).addToCart(_totalPriceObject);
+    AppToast.addToCartToast(fToast);
+    Navigator.pop(context);
   }
 
   Widget weightComponent(
@@ -328,7 +440,8 @@ class _ShowProductDetailsBottomSheetState
   Widget extrasComponent(
       {void Function(int index)? click,
       required ExtraItemEntity? item,
-      required int index}) {
+      required int index,
+      }) {
     return InkWell(
       splashColor: Colors.white,
       onTap: () {

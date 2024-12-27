@@ -13,6 +13,13 @@ extension ProductDetailsConverter on ApiProductDetailsModel {
       extraItems: extraItems?.map((e) => e.map()).toList() ?? [],
       salads: salads?.map((e) => e.map()).toList() ?? [],
       weights: weights?.map((e) => e.map()).toList() ?? [],
+      numberOfPieces:1 ,
+      totalPrice: 0,
+      additionNumbers: 0,
+      extraNumbers: 0,
+      choosesWeight:null ,
+      productPrice: 100,
+
     );
   }
 }
@@ -20,7 +27,7 @@ extension ProductDetailsConverter on ApiProductDetailsModel {
 extension ExtraItemEntityConverter on ApiExtraItemModel {
   ExtraItemEntity map() {
     return ExtraItemEntity(
-        id: id, name: name, price: price, image: image, isChoose: false);
+        id: id, name: name, price: price, image: image, isChoose: false, numberOfPieces: 0);
   }
 }
 
@@ -32,6 +39,6 @@ extension WeightEntityConverter on ApiWeightModel {
         price: price,
         points: points,
         priceBeforeDiscount: priceBeforeDiscount,
-        numberOfSalad: numberOfSalad);
+        numberOfSalad: numberOfSalad, isSelected: false);
   }
 }

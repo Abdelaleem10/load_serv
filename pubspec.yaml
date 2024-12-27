@@ -51,6 +51,7 @@ dependencies:
   lottie:
   fluttertoast: ^8.2.10
   rxdart:
+  adaptive_scrollbar:
   connectivity_plus:
 dev_dependencies:
   flutter_test:

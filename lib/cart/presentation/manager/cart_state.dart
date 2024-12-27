@@ -1,8 +1,9 @@
 import 'package:equatable/equatable.dart';
+import 'package:loadserv_task/product/domain/entity/product_deatils_entity.dart';
 import 'package:loadserv_task/product/domain/entity/product_total_price_entity.dart';
 
 class CartState extends Equatable {
-  final List<CartProductEntity> cartList;
+  final List<ProductDetailsEntity> cartList;
   final int checkOutPrice;
   final String? errorMessage;
 
@@ -15,7 +16,7 @@ class CartState extends Equatable {
   const CartState.initial() : this(cartList: const [],checkOutPrice:0, errorMessage: null);
 
   CartState reduce(
-      {List<CartProductEntity>? cartList,
+      {List<ProductDetailsEntity>? cartList,
         int? checkOutPrice,
         String? errorMessage}) {
     return CartState(

@@ -31,65 +31,68 @@ class _ProductComponentState extends State<ProductComponent> {
             Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Stack(
-                  children: [
-                    ClipRRect(
-                      borderRadius:
-                          const BorderRadius.vertical(top: Radius.circular(15)),
-                      child: Image.network(
-                        widget.item.image ?? '', // Replace with your image URL
-                        height: 150,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Positioned(
-                      top: 10,
-                      right: 10,
-                      child: InkWell(
-                        onTap: () {
-                          setState(() {
-                            _isFavorite = !_isFavorite;
-                          });
-                        },
-                        child: Icon(
-                          _isFavorite ? Icons.favorite : Icons.favorite_border,
-                          color: Colors.orange,
+                Expanded(
+                  child: Stack(
+                    alignment: Alignment.topCenter,
+                    children: [
+                      ClipRRect(
+                        borderRadius:
+                            const BorderRadius.vertical(top: Radius.circular(15)),
+                        child: Image.network(
+                          widget.item.image ?? '', // Replace with your image URL
+                          height: MediaQuery.of(context).size.height/8,
+                          width: double.infinity,
+                          fit: BoxFit.fill,
                         ),
                       ),
-                    ),
-                  ],
+                      Positioned(
+                        top: 10,
+                        right: 10,
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              _isFavorite = !_isFavorite;
+                            });
+                          },
+                          child: Icon(
+                            _isFavorite ? Icons.favorite : Icons.favorite_border,
+                            color: Colors.orange,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Flexible(
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          widget.item.name ?? 'name',
+                          style: TextStyles.bold(
+                            fontSize: Dimensions.large,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: PaddingDimensions.small),
                           child: Text(
-                            widget.item.name ?? 'name',
-                            style: TextStyles.bold(
-                              fontSize: 18,
-                            ),
+                            widget.item.description ?? 'description',
+                            style: TextStyles.regular(color: AppColors.grayColor,
+                            fontSize: Dimensions.large),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        Flexible(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: PaddingDimensions.normal),
-                            child: Text(
-                              widget.item.description ?? 'description',
-                              style: TextStyles.regular(color: Colors.grey),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
                 // const Spacer(),
@@ -156,9 +159,10 @@ class _ProductComponentState extends State<ProductComponent> {
             const Positioned(
                 bottom: 18,
                 child: CustomIcon(
+                  gradient:  AppColors.iconGradient,
                   icon: Icons.add,
-                  size: 22,
-                  borderRadius: 10,
+                  size: 14,
+                  borderRadius: 8,
                   color: Colors.white,
                 )),
           ],

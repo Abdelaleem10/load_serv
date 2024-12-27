@@ -76,6 +76,7 @@ InputDecoration authenticationInputDecoration(
 
     }) {
   return InputDecoration(
+
     labelText: labelText,
     suffixIcon: suffixIcon,
     prefixIcon: prefixIcon,
@@ -92,37 +93,38 @@ InputDecoration authenticationInputDecoration(
     ),
     errorMaxLines:maxErrorLines,
     errorBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.all(Radius.circular(borderRaduis ?? 16)),
+      borderRadius: BorderRadius.all(Radius.circular(borderRaduis ?? 8)),
       borderSide:  BorderSide(
-          color: errorBorderColor ?? AppColors.grayColor, width: .6, style: BorderStyle.solid),
+          color: errorBorderColor ?? AppColors.grayColor, width: .2, style: BorderStyle.none),
     ),
     focusedErrorBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.all(Radius.circular(borderRaduis ?? 16)),
+      borderRadius: BorderRadius.all(Radius.circular(borderRaduis ?? 8)),
       borderSide:  BorderSide(
-          color: errorBorderColor ?? AppColors.grayColor, width: .6, style: BorderStyle.solid),
+          color: errorBorderColor ?? AppColors.grayColor, width: .2, style: BorderStyle.none),
     ),
     fillColor: Colors.white,
     suffixIconConstraints: suffixIconConstraints,
     prefixIconConstraints: prefixIconConstraints,
+
     contentPadding: contentPadding ?? const EdgeInsets.symmetric(
             vertical: PaddingDimensions.xxLarge - 5,
             horizontal: PaddingDimensions.xxLarge),
     border:border ?? OutlineInputBorder(
-      borderRadius: BorderRadius.all(Radius.circular(borderRaduis ?? 16)),
+      borderRadius: BorderRadius.all(Radius.circular(borderRaduis ?? 8)),
       borderSide: BorderSide(
-          color: borderColor ?? Colors.white10,
-          width: 1,
+          color: borderColor ?? AppColors.grayColor,
+          width: .2,
           style: BorderStyle.none),
     ),
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.all(Radius.circular(borderRaduis ?? 16)),
+      borderRadius: BorderRadius.all(Radius.circular(borderRaduis ?? 8)),
       borderSide: BorderSide(
           color: borderColor ?? Colors.white10,
-          width: 1,
+          width: .2,
           style: BorderStyle.solid),
     ),
     focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.all(Radius.circular(borderRaduis ?? 16)),
+      borderRadius: BorderRadius.all(Radius.circular(borderRaduis ?? 8)),
       borderSide: BorderSide(
           color: focusBorderColor ?? Colors.white10,
           width: 1,

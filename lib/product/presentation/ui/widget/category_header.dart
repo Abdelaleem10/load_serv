@@ -14,10 +14,10 @@ class CategoryHeader extends StatelessWidget {
         Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: 50),
+              padding:   EdgeInsets.only(bottom: MediaQuery.of(context).size.height/22),
               child: Container(
-                width: 430,
-                height: 230,
+                // width: MediaQuery.of(context).size.,
+                height: MediaQuery.of(context).size.height/4,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(24),
                   // Rounded corners
@@ -80,7 +80,7 @@ class CategoryHeader extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              CustomAppBarIcon(icon:Icons.menu),
+                              const CustomAppBarIcon(icon:Icons.menu),
 
                             ],
                           ),
@@ -101,7 +101,7 @@ class CategoryHeader extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CircleAvatar(
-                      radius: 70,
+                      radius: 55,
                       backgroundColor: Colors.transparent,
                       child: Container(
                         decoration: BoxDecoration(

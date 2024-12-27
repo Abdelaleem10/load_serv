@@ -3,11 +3,12 @@ import 'package:loadserv_task/common/presentation/utils/app_style/app_colors.dar
 import 'package:loadserv_task/common/presentation/utils/app_style/text_styles.dart';
 import 'package:loadserv_task/common/presentation/utils/bottom_sheets/show_bottom_sheet_common.dart';
 import 'package:loadserv_task/common/presentation/utils/dimensions.dart';
+import 'package:loadserv_task/product/domain/entity/product_deatils_entity.dart';
 import 'package:loadserv_task/product/domain/entity/product_total_price_entity.dart';
 import 'package:loadserv_task/product/presentation/ui/widget/custome_widgets.dart';
 
 class CardItem extends StatefulWidget {
-  final CartProductEntity item;
+  final ProductDetailsEntity item;
   final void Function(int numbers) valueTrigger;
   final int? defaultValue;
 
@@ -24,6 +25,10 @@ class CardItem extends StatefulWidget {
 class _CardItemState extends State<CardItem> {
   final ValueNotifier<int> _numbers = ValueNotifier(0);
 
+
+  late ProductDetailsEntity _item;
+
+
   void _increasePieces() {
     _numbers.value += 1;
     widget.valueTrigger(_numbers.value);
@@ -38,6 +43,8 @@ class _CardItemState extends State<CardItem> {
 
   @override
   void initState() {
+    _item = widget.item;
+
     if (widget.defaultValue != null) {
       _numbers.value = widget.defaultValue!;
     }
@@ -50,7 +57,8 @@ void _whenComplete(){
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        CommonBottomSheet.openProductDetailsSheet(context, widget.item.id,
+        CommonBottomSheet.openProductDetailsSheet(context,
+            widget.item.id.toString(),
         cartItem: widget.item,
         whenComplete:_whenComplete );
       },
@@ -78,7 +86,7 @@ void _whenComplete(){
                         Radius.circular(15),
                       ),
                       child: Image.network(
-                        widget.item.image ??
+                        _item.image ??
                             "https://www.trendapp.org/test-project/public/storage/product/1728285739_67038c2be6775.jpg",
                         height: MediaQuery.of(context).size.height / 4.4,
                         width: MediaQuery.of(context).size.width / 3,
@@ -103,34 +111,34 @@ void _whenComplete(){
                                   children: [
                                     Text(
                                       textAlign: TextAlign.start,
-                                      widget.item.name ??
+                                      _item.name ??
                                           'Grilled Steak, with Boiled Basmati Rice And Salad',
                                       style: TextStyles.bold(
                                         fontSize: Dimensions.xLarge,
                                       ),
                                     ),
                                     const SizedBox(height: 8),
-                                    if (widget.item.weightName?.isNotEmpty ??
-                                        false) ...[
+                                    if (_item.choosesWeight!=null) ...[
                                       _customRow(
                                           title: 'Weight',
                                           description:
-                                              widget.item.weightName ?? '').paddingFromBottom,
+                                          _item.choosesWeight?.name??'').paddingFromBottom,
 
                                     ],
-                                    if (widget
-                                        .item.additionsNumber!=0) ...[
+                                    if (_item.additionNumbers!=0) ...[
                                       _customRow(
                                           title: 'Salads',
                                           description:
-                                              '${widget.item.additionsNumber} items').paddingFromBottom,
+                                              '${_item.additionNumbers} items').paddingFromBottom,
                                     ],
-                                    if (widget.item.extrasNumber!=0) ...[
+                                    if (_item.extraItems.any((e)=>e.isChoose==true)) ...[
                                       _customRow(
                                           title: 'Extras',
                                           description:
-                                              '${widget.item.extrasNumber} items').paddingFromBottom,
+                                          '${_item.extraNumbers} items').paddingFromBottom,
                                     ],
+
+
                                   ],
                                 ),
                               ),
@@ -146,6 +154,7 @@ void _whenComplete(){
                                       splashColor: Colors.white,
                                       onTap: _increasePieces,
                                       child: const CustomIcon(
+                                        gradient: AppColors.iconGradient,
                                         icon: Icons.add,
                                         size: 18,
                                       ),
@@ -173,6 +182,7 @@ void _whenComplete(){
                                       splashColor: Colors.white,
                                       onTap: _decreasePieces,
                                       child: const CustomIcon(
+                                        gradient: AppColors.iconGradient,
                                         icon: Icons.remove,
                                         size: 14,
                                       ),
@@ -192,12 +202,12 @@ void _whenComplete(){
                             const Spacer(),
                             Image.asset(
                               "assets/images/note.png",
-                              scale: 4,
+                              scale: 3,
                             ),
                             const Spacer(),
                             Image.asset(
                               "assets/images/chat.png",
-                              scale: 4,
+                              scale: 3,
                             ),
                             const Spacer(),
                           ],

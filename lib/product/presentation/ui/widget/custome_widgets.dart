@@ -8,6 +8,7 @@ class CustomIcon extends StatelessWidget {
   final double? borderRadius;
   final Color? color;
   final double? padding;
+  final Gradient? gradient;
 
   const CustomIcon(
       {super.key,
@@ -15,7 +16,9 @@ class CustomIcon extends StatelessWidget {
       this.size,
       this.borderRadius,
       this.color,
-        this.padding});
+        this.padding,
+        this.gradient,
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +32,7 @@ class CustomIcon extends StatelessWidget {
         ),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(borderRadius ?? 8),
+            gradient:gradient,
             color: AppColors.orangeColor),
         child: Icon(
           icon,

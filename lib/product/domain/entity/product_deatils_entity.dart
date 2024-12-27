@@ -2,11 +2,17 @@ import 'package:equatable/equatable.dart';
 
 class ProductDetailsEntity extends Equatable {
   final int? id;
+  final int productPrice;
   final String? name;
   final String? description;
   final String? image;
   final bool? isSingle;
   final int? points;
+  final int numberOfPieces;
+  final WeightEntity? choosesWeight;
+  final int totalPrice;
+  final int additionNumbers;
+  final int extraNumbers;
   final List<ExtraItemEntity> extraItems;
   final List<ExtraItemEntity> salads;
   final List<WeightEntity> weights;
@@ -19,34 +25,58 @@ class ProductDetailsEntity extends Equatable {
           image: null,
           isSingle: null,
           points: null,
+          choosesWeight: null,
+          totalPrice: 0,
+    additionNumbers: 0,
+    extraNumbers: 0,
+      productPrice: 100,
+          numberOfPieces: 1,
           extraItems: [],
           salads: [],
           weights: [],
         );
 
   ProductDetailsEntity modify({
-     List<ExtraItemEntity>? extraItems,
-     List<ExtraItemEntity>? salads,
-
+    int? numberOfPieces,
+    int? totalPrice,
+    int? productPrice,
+    int? additionNumbers,
+    int? extraNumbers,
+    WeightEntity? choosesWeight,
+    List<ExtraItemEntity>? extraItems,
+    List<ExtraItemEntity>? salads,
   }) {
-    return ProductDetailsEntity(id: id,
+    return ProductDetailsEntity(
+        id: id,
         name: name,
         description: description,
         image: image,
         isSingle: isSingle,
         points: points,
-        extraItems: extraItems??this.extraItems,
-        salads: salads??this.salads,
-        weights: weights);
+        totalPrice: totalPrice ?? this.totalPrice,
+        additionNumbers: additionNumbers ?? this.additionNumbers,
+        extraNumbers: extraNumbers ?? this.extraNumbers,
+        productPrice: productPrice ?? this.productPrice,
+        numberOfPieces: numberOfPieces ?? this.numberOfPieces,
+        extraItems: extraItems ?? this.extraItems,
+        salads: salads ?? this.salads,
+        weights: weights,
+        choosesWeight: choosesWeight ?? this.choosesWeight);
   }
 
   const ProductDetailsEntity({
     required this.id,
     required this.name,
+    required this.productPrice,
     required this.description,
     required this.image,
     required this.isSingle,
+    required this.totalPrice,
+    required this.additionNumbers,
+    required this.extraNumbers,
     required this.points,
+    required this.choosesWeight,
+    required this.numberOfPieces,
     required this.extraItems,
     required this.salads,
     required this.weights,
@@ -58,11 +88,17 @@ class ProductDetailsEntity extends Equatable {
         name,
         description,
         image,
+        numberOfPieces,
         isSingle,
         points,
         extraItems,
+        totalPrice,
         salads,
-        weights
+        weights,
+        choosesWeight,
+    additionNumbers,
+    extraNumbers,
+    productPrice,
       ];
 }
 
@@ -71,26 +107,33 @@ class ExtraItemEntity extends Equatable {
   final String? name;
   final int? price;
   final String? image;
-   bool isChoose;
+  bool? isChoose;
+  int numberOfPieces;
 
-   ExtraItemEntity(
-      {required this.id,
-      required this.name,
-      required this.price,
-      required this.image,
-      required this.isChoose});
+  ExtraItemEntity({
+    required this.id,
+    required this.name,
+    required this.price,
+    required this.image,
+    required this.isChoose,
+    required this.numberOfPieces,
+  });
 
   ExtraItemEntity modify({
     bool? isChoose,
-}){
-    return ExtraItemEntity(id: id,
+    int? numberOfPieces,
+  }) {
+    return ExtraItemEntity(
+        id: id,
         name: name,
         price: price,
         image: image,
-        isChoose: isChoose??this.isChoose);
+        numberOfPieces: numberOfPieces ?? this.numberOfPieces,
+        isChoose: isChoose ?? this.isChoose);
   }
+
   @override
-  List<Object?> get props => [id, name, price, image, isChoose];
+  List<Object?> get props => [id, name, price, image, isChoose, numberOfPieces];
 }
 
 class WeightEntity extends Equatable {
@@ -100,6 +143,7 @@ class WeightEntity extends Equatable {
   final int? points;
   final int? priceBeforeDiscount;
   final int? numberOfSalad;
+  final bool isSelected;
 
   const WeightEntity({
     required this.id,
@@ -108,9 +152,10 @@ class WeightEntity extends Equatable {
     required this.points,
     required this.priceBeforeDiscount,
     required this.numberOfSalad,
+    required this.isSelected,
   });
 
   @override
   List<Object?> get props =>
-      [id, name, price, points, priceBeforeDiscount, numberOfSalad];
+      [id, name, price, points, priceBeforeDiscount, numberOfSalad, isSelected];
 }

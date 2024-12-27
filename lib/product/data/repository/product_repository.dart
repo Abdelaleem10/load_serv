@@ -21,7 +21,6 @@ class CategoryRepositoryImp implements CategoryRepository {
         throw const ServerException();
       } else {
         var data = jsonDecode(result.body);
-        print('data is ${data.toString()}');
         final request = ApiWelcomeModel.fromJson(data).categoryModel;
         return request?.map() ?? CategoryEntity.initial();
       }
@@ -38,7 +37,6 @@ class CategoryRepositoryImp implements CategoryRepository {
         throw const ServerException();
       } else {
         var data = jsonDecode(result.body);
-        print('data is ${data.toString()}');
         final request = ApiProductDetailsResponse.fromJson(data).data;
         return request?.map() ?? ProductDetailsEntity.initial();
       }

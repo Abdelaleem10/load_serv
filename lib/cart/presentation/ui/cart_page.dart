@@ -9,6 +9,7 @@ import 'package:loadserv_task/common/presentation/utils/app_style/app_colors.dar
 import 'package:loadserv_task/common/presentation/utils/app_style/text_styles.dart';
 import 'package:loadserv_task/common/presentation/utils/buttons/custom_buttons.dart';
 import 'package:loadserv_task/common/presentation/utils/dimensions.dart';
+import 'package:loadserv_task/product/domain/entity/product_deatils_entity.dart';
 import 'package:loadserv_task/product/domain/entity/product_total_price_entity.dart';
 import 'package:rxdart/utils.dart';
 
@@ -20,24 +21,9 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  final _composition = CompositeSubscription();
 
-  void _listener() {
-    _composition.add(ModifyCartItemSubscription.stream().listen((event) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        setState(() {
-          _modifyItem(event);
-        });
-      });
-
-
-    }));
-  }
-
-  @override
   @override
   void initState() {
-    _listener();
     super.initState();
   }
 
@@ -80,7 +66,7 @@ class _CartPageState extends State<CartPage> {
                     "Cart Empty",
                     style: TextStyles.bold(fontSize: Dimensions.xxxLarge),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: PaddingDimensions.large,
                   ),
                   PrimaryButton(
@@ -97,6 +83,9 @@ class _CartPageState extends State<CartPage> {
               height: MediaQuery.of(context).size.height,
               child: Column(
                 children: [
+                  const SizedBox(
+                    height: PaddingDimensions.xxLarge,
+                  ),
                   Expanded(
                     child: ListView.builder(
                       itemCount: state.cartList.length,
@@ -158,7 +147,7 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  void _modifyItem(CartProductEntity item) {
+  void _modifyItem(ProductDetailsEntity item) {
     BlocProvider.of<CartCubit>(context).modifyProduct(item);
   }
 

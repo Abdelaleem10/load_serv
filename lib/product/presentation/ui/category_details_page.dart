@@ -57,6 +57,9 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
                         state.categoryDetails.data ?? CategoryEntity.initial(),
                   ),
                   const SearchComponent(),
+                   const SizedBox(
+                    height: PaddingDimensions.normal,
+                  ),
                   Flexible(
                     child: GridView.builder(
                       shrinkWrap: true,
@@ -64,9 +67,9 @@ class _CategoryDetailsPageState extends State<CategoryDetailsPage> {
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2, // number of items in each row
-                              mainAxisSpacing: 16.0, // spacing between rows
-                              crossAxisSpacing: 16.0,
-                              childAspectRatio: .63 // spacing between columns
+                              mainAxisSpacing: 20.0, // spacing between rows
+                              crossAxisSpacing: 20.0,
+                              childAspectRatio: .81 // spacing between columns
                               ),
                       padding: const EdgeInsets.all(8.0),
                       // padding around the grid

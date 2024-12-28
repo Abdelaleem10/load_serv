@@ -73,6 +73,7 @@ InputDecoration authenticationInputDecoration(
       TextStyle? hintStyle,
       BoxConstraints? suffixIconConstraints,
       BoxConstraints? prefixIconConstraints,
+      Color? fillColor,
 
     }) {
   return InputDecoration(
@@ -81,6 +82,7 @@ InputDecoration authenticationInputDecoration(
     suffixIcon: suffixIcon,
     prefixIcon: prefixIcon,
     hintText: hintText,
+    // fillColor: fillColor,
     errorText: errorText,
     hintStyle: hintStyle ??TextStyles.regular(
       color: AppColors.grayColor,
@@ -102,7 +104,7 @@ InputDecoration authenticationInputDecoration(
       borderSide:  BorderSide(
           color: errorBorderColor ?? AppColors.grayColor, width: .2, style: BorderStyle.none),
     ),
-    fillColor: Colors.white,
+    fillColor: fillColor??Colors.white,
     suffixIconConstraints: suffixIconConstraints,
     prefixIconConstraints: prefixIconConstraints,
 

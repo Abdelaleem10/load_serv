@@ -16,6 +16,7 @@ class ProductDetailsEntity extends Equatable {
   final List<ExtraItemEntity> extraItems;
   final List<ExtraItemEntity> salads;
   final List<WeightEntity> weights;
+  final String? notes;
 
   ProductDetailsEntity.initial()
       : this(
@@ -27,13 +28,14 @@ class ProductDetailsEntity extends Equatable {
           points: null,
           choosesWeight: null,
           totalPrice: 0,
-    additionNumbers: 0,
-    extraNumbers: 0,
-      productPrice: 100,
+          additionNumbers: 0,
+          extraNumbers: 0,
+          productPrice: 100,
           numberOfPieces: 1,
           extraItems: [],
           salads: [],
           weights: [],
+          notes: null,
         );
 
   ProductDetailsEntity modify({
@@ -42,6 +44,7 @@ class ProductDetailsEntity extends Equatable {
     int? productPrice,
     int? additionNumbers,
     int? extraNumbers,
+    String? notes,
     WeightEntity? choosesWeight,
     List<ExtraItemEntity>? extraItems,
     List<ExtraItemEntity>? salads,
@@ -61,6 +64,7 @@ class ProductDetailsEntity extends Equatable {
         extraItems: extraItems ?? this.extraItems,
         salads: salads ?? this.salads,
         weights: weights,
+        notes: notes ?? this.notes,
         choosesWeight: choosesWeight ?? this.choosesWeight);
   }
 
@@ -80,6 +84,7 @@ class ProductDetailsEntity extends Equatable {
     required this.extraItems,
     required this.salads,
     required this.weights,
+    required this.notes,
   });
 
   @override
@@ -96,9 +101,10 @@ class ProductDetailsEntity extends Equatable {
         salads,
         weights,
         choosesWeight,
-    additionNumbers,
-    extraNumbers,
-    productPrice,
+        additionNumbers,
+        extraNumbers,
+        productPrice,
+        notes,
       ];
 }
 

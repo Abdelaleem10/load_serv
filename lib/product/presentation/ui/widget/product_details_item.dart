@@ -272,7 +272,6 @@ class _ProductDetailsItemState extends State<ProductDetailsItem> {
         }
       },
       child: Container(
-        width: MediaQuery.of(context).size.width / 2,
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -282,30 +281,45 @@ class _ProductDetailsItemState extends State<ProductDetailsItem> {
             width: 2,
           ),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(label, style: TextStyles.bold(fontSize: Dimensions.large)),
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Text(
-                "$price EGP",
-                style: TextStyles.regular(fontSize: Dimensions.large),
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width / 2.5,
+
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+
+            children: [
+              Flexible(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Expanded(child: Text(label, style: TextStyles.bold(fontSize: Dimensions.large))),
+                    // SizedBox(
+                    //   width: 17,
+                    // ),
+                    // Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(
+                        "$price EGP",
+                        style: TextStyles.regular(fontSize: Dimensions.large),
+                      ),
+                    ),
+                    selectedValue == index
+                        ? const Icon(
+                            Icons.check_circle,
+                            color: AppColors.orangeColor,
+                            size: 20,
+                          )
+                        : const Icon(
+                            Icons.radio_button_unchecked_rounded,
+                            color: Colors.black,
+                            size: 20,
+                          )
+                  ],
+                ),
               ),
-            ),
-            selectedValue == index
-                ? const Icon(
-                    Icons.check_circle,
-                    color: AppColors.orangeColor,
-                    size: 20,
-                  )
-                : const Icon(
-                    Icons.radio_button_unchecked_rounded,
-                    color: Colors.black,
-                    size: 20,
-                  )
-          ],
+            ],
+          ),
         ),
       ),
     );

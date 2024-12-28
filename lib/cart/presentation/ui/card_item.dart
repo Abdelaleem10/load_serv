@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loadserv_task/cart/presentation/manager/cart_cubit.dart';
+import 'package:loadserv_task/common/base/app_text_fields/app_text_form_field.dart';
 import 'package:loadserv_task/common/presentation/utils/app_style/app_colors.dart';
 import 'package:loadserv_task/common/presentation/utils/app_style/text_styles.dart';
 import 'package:loadserv_task/common/presentation/utils/bottom_sheets/show_bottom_sheet_common.dart';
@@ -25,9 +28,8 @@ class CardItem extends StatefulWidget {
 class _CardItemState extends State<CardItem> {
   final ValueNotifier<int> _numbers = ValueNotifier(0);
 
-
   late ProductDetailsEntity _item;
-
+  final TextEditingController _noteController = TextEditingController();
 
   void _increasePieces() {
     _numbers.value += 1;
@@ -48,24 +50,24 @@ class _CardItemState extends State<CardItem> {
     if (widget.defaultValue != null) {
       _numbers.value = widget.defaultValue!;
     }
+    _noteController.text = _item.notes ?? '';
     super.initState();
   }
-void _whenComplete(){
 
-}
+  void _whenComplete() {}
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        CommonBottomSheet.openProductDetailsSheet(context,
-            widget.item.id.toString(),
-        cartItem: widget.item,
-        whenComplete:_whenComplete );
+        CommonBottomSheet.openProductDetailsSheet(
+            context, widget.item.id.toString(),
+            cartItem: widget.item, whenComplete: _whenComplete);
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SizedBox(
-          height: MediaQuery.of(context).size.height / 4.4,
+          height: MediaQuery.of(context).size.height / 3.6,
           child: Card(
             // shadowColor: Colors.black,
             shape:
@@ -118,27 +120,29 @@ void _whenComplete(){
                                       ),
                                     ),
                                     const SizedBox(height: 8),
-                                    if (_item.choosesWeight!=null) ...[
+                                    if (_item.choosesWeight != null) ...[
                                       _customRow(
-                                          title: 'Weight',
-                                          description:
-                                          _item.choosesWeight?.name??'').paddingFromBottom,
-
+                                              title: 'Weight',
+                                              description:
+                                                  _item.choosesWeight?.name ??
+                                                      '')
+                                          .paddingFromBottom,
                                     ],
-                                    if (_item.additionNumbers!=0) ...[
+                                    if (_item.additionNumbers != 0) ...[
                                       _customRow(
-                                          title: 'Salads',
-                                          description:
-                                              '${_item.additionNumbers} items').paddingFromBottom,
+                                              title: 'Salads',
+                                              description:
+                                                  '${_item.additionNumbers} items')
+                                          .paddingFromBottom,
                                     ],
-                                    if (_item.extraItems.any((e)=>e.isChoose==true)) ...[
+                                    if (_item.extraItems
+                                        .any((e) => e.isChoose == true)) ...[
                                       _customRow(
-                                          title: 'Extras',
-                                          description:
-                                          '${_item.extraNumbers} items').paddingFromBottom,
+                                              title: 'Extras',
+                                              description:
+                                                  '${_item.extraNumbers} items')
+                                          .paddingFromBottom,
                                     ],
-
-
                                   ],
                                 ),
                               ),
@@ -160,21 +164,23 @@ void _whenComplete(){
                                       ),
                                     ),
                                     const Spacer(),
-                                    SizedBox(
-                                      width:
-                                          MediaQuery.of(context).size.width / 8,
-                                      child: ValueListenableBuilder(
-                                        valueListenable: _numbers,
-                                        builder: (context, value, child) {
-                                          return Center(
-                                            child: Text(
-                                              _numbers.value.toString(),
-                                              style: TextStyles.medium(
-                                                fontSize: 14,
+                                    Expanded(
+                                      child: SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width / 8,
+                                        child: ValueListenableBuilder(
+                                          valueListenable: _numbers,
+                                          builder: (context, value, child) {
+                                            return Center(
+                                              child: Text(
+                                                _numbers.value.toString(),
+                                                style: TextStyles.medium(
+                                                  fontSize: 14,
+                                                ),
                                               ),
-                                            ),
-                                          );
-                                        },
+                                            );
+                                          },
+                                        ),
                                       ),
                                     ),
                                     const Spacer(),
@@ -197,17 +203,25 @@ void _whenComplete(){
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Expanded(
-                              child: _boldText(widget.item.totalPrice.toString()),
+                              child:
+                                  _boldText(widget.item.totalPrice.toString()),
                             ),
                             const Spacer(),
                             Image.asset(
-                              "assets/images/note.png",
+                              "assets/images/done_note.png",
                               scale: 3,
                             ),
                             const Spacer(),
-                            Image.asset(
-                              "assets/images/chat.png",
-                              scale: 3,
+                            InkWell(
+                              onTap: () {
+                                _showAlert();
+                              },
+                              child: Image.asset(
+                                _item.notes != null
+                                    ? "assets/images/chat.png"
+                                    : "assets/images/note.png",
+                                scale: 3,
+                              ),
                             ),
                             const Spacer(),
                           ],
@@ -221,6 +235,135 @@ void _whenComplete(){
           ),
         ),
       ),
+    );
+  }
+
+  void _showAlert() {
+    if ((_item.notes?.isEmpty ?? true)) {
+      _noteController.text = '';
+    } else {
+      _noteController.text = _item.notes!;
+    }
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: Dialog(
+              insetPadding: const EdgeInsets.all(
+                PaddingDimensions.xxLarge,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: PaddingDimensions.xxLarge,
+                    vertical: PaddingDimensions.xLarge),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Center(
+                      child: Text(
+                        "Add Note",
+                        style: TextStyles.bold(
+                            color: Colors.black, fontSize: Dimensions.xLarge),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: PaddingDimensions.large),
+                      child: AppTextFormField(
+                        controller: _noteController,
+                        maxLines: 5,
+                        fillColor: Colors.grey.withOpacity(.1),
+                        borderColor: AppColors.grayColor,
+                        hint: "",
+                        hintStyle: TextStyles.medium(
+                            fontSize: Dimensions.large,
+                            color: AppColors.grayColor),
+                        focusBorderColor: AppColors.grayColor,
+                        textFieldType: TextFieldType.normal,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: PaddingDimensions.large,
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Colors.black45,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: PaddingDimensions.medium,
+                                      horizontal: PaddingDimensions.large),
+                                  child: Center(
+                                      child: Text(
+                                    "cancel",
+                                    style: TextStyles.bold(
+                                        color: Colors.white,
+                                        fontSize: Dimensions.large),
+                                  )),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: PaddingDimensions.xxLarge,
+                          ),
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  if (_noteController.text.trim().isNotEmpty) {
+                                    _item = _item.modify(
+                                        notes: _noteController.text);
+                                    BlocProvider.of<CartCubit>(context)
+                                        .modifyProduct(_item);
+
+                                    Navigator.pop(context);
+                                  }
+                                });
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+
+                                  color: AppColors
+                                      .orangeColor, // Semi-transparent overlay
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: PaddingDimensions.medium,
+                                      horizontal: PaddingDimensions.large),
+                                  child: Center(
+                                      child: Text(
+                                    "confirm",
+                                    style: TextStyles.bold(
+                                        color: Colors.white,
+                                        fontSize: Dimensions.large),
+                                  )),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              )),
+        );
+      },
     );
   }
 
@@ -262,11 +405,10 @@ void _whenComplete(){
     );
   }
 }
-extension PaddingFromOneSide on Widget {
-  Widget get paddingFromBottom =>
-     Padding(
-      padding: const EdgeInsets.only(bottom: PaddingDimensions.small),
-      child: this,
-    );
 
+extension PaddingFromOneSide on Widget {
+  Widget get paddingFromBottom => Padding(
+        padding: const EdgeInsets.only(bottom: PaddingDimensions.small),
+        child: this,
+      );
 }

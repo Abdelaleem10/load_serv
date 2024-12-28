@@ -47,6 +47,7 @@ class AppTextFormField extends StatefulWidget {
   final bool autoFocus;
   final InputBorder? border;
   final Color? cursorColor;
+  final Color? fillColor;
 
   final ScrollController? scrollController;
   const AppTextFormField(
@@ -91,7 +92,8 @@ class AppTextFormField extends StatefulWidget {
       this.prefixIconConstraints,
       this.scrollController,
       this.autoFocus = false,
-      this.cursorColor
+      this.cursorColor,
+      this.fillColor,
       });
 
   @override
@@ -135,6 +137,7 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
             )
           : widget.textFieldType == TextFieldType.normal
               ? authenticationInputDecoration(
+        fillColor: widget.fillColor,
         errorBorderColor:widget.errorBorderColor,
                   border: widget.border,
                   errorTextFontSize:

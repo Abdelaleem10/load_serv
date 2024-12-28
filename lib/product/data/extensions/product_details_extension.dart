@@ -19,6 +19,7 @@ extension ProductDetailsConverter on ApiProductDetailsModel {
       extraNumbers: 0,
       choosesWeight:null ,
       productPrice: 100,
+      notes: null,
 
     );
   }
